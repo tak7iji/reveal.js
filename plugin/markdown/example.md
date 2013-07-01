@@ -23,6 +23,10 @@ Content 2.1
 
 Content 3.1
 
+    <script>
+      var foo = 'a';
+    </script>
+
 
 ## External 3.2
 

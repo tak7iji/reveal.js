@@ -28,7 +28,9 @@
     };
 
     var twrap = function(el) {
-      return '<script type="text/template">' + el + '</script>';
+      var e = document.createElement('textarea');
+      e.innerHTML = el;
+      return '<script type="text/template">' + e.innerHTML + '</script>';
     };
 
     var getForwardedAttributes = function(section) {
@@ -52,6 +54,17 @@
 
         return result.join( ' ' );
     }
+
+    String.prototype.escapeHTML = function() {
+        var tagsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;'
+        };
+        return this.replace(/[&<>]/g, function(tag) {
+            return tagsToReplace[tag] || tag;
+        });
+    };
 
     var slidifyMarkdown = function(markdown, separator, vertical, attributes) {
 
@@ -105,6 +118,7 @@
             }
             // vertical
             else {
+                console.log(sectionStack[k]);
                 markdownSections += '<section '+ attributes +'>' +
                                         '<section data-markdown>' +  sectionStack[k].map(twrap).join('</section><section data-markdown>') + '</section>' +
                                     '</section>';
@@ -175,7 +189,9 @@
 
         var markdown = stripLeadingWhitespace(section);
 
-        section.innerHTML = marked(markdown);
+        var e = document.createElement('textarea');
+        e.innerHTML = markdown;
+        section.innerHTML = marked(e.value);
 
         if( notes ) {
             section.appendChild( notes );
